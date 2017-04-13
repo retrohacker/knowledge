@@ -73,7 +73,7 @@ gtoken.getToken(function(e, token) {
     if(e) { throw e }
     // create a new managed zone
     request({
-      uri: `${PROJECT_URI_GOES_HERE}/managedZones,
+      uri: `${PROJECT_URI_GOES_HERE}/managedZones`,
       method: 'POST',
       json: true,
       auth: {
