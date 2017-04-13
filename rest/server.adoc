@@ -1,0 +1,21 @@
+Implementing a REST Server
+==========================
+William Blankenship <william.jblankenship@gmail.com>
+v1.0, April 2017: Initial brain dump
+
+
+== Idempotent
+
+[quote, Unknown, Unknown]
+__________________________
+Micro-services: Because all problems become easier when broken up across a
+network boundary
+__________________________
+
+Clients wont -- and shouldn't have to figure out -- what the implications of a failed request are. If you server fails to fulfill a request, the client should be able to retry without fear of causing a problem. This means a client should be able to repeat the same exact request multiple times safely, even if that request is something like, say, charge a user $50. This is called being idempotent.
+
+The easiest way to handle idempotent requests is by generating a universally unique ID (UUID) for each request, and keeping tack of the UUIDs you have encountered in the past. When you see the UUID of a request you have already successfully handled in the past, you can confidently respond "success" as that action was completed successfully. This also means the burden of responding to errors falls to the server. In the event there is a problem with a transaction, the server needs to be smart enough to sort it out. Whether this means a simple retry, or rolling back changes to re-attempt on the next request, the server can't put the burden of deducing state and error-correcting on the client.
+
+=== Batching requests
+
+As we talked about in the client version of this document, clients should be able to batch a large number of requests up and send them as a single request. Investing in an endpoint like this upfront isn't always necessary, but you should plan on having one in the future when the use of your application starts to scale up.
