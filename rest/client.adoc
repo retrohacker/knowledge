@@ -1,0 +1,59 @@
+Implementing a REST Client
+==========================
+William Blankenship <william.jblankenship@gmail.com>
+v1.0, April 2017: Initial brain dump
+:request: https://github.com/request/request
+:concurrent_request: https://github.com/retrohacker/concurrent_request
+
+
+== Error Handling
+
+[quote, Unknown, Unknown]
+__________________________
+Micro-services: Because all problems become easier when broken up across a
+network boundary
+__________________________
+
+When talking to a REST API, or making any call over the network really, it is important that you try to both be a good citizen _and_ protect the stability of your own application. The upstream server you are talking to _will not always be there_, and when it is there it _wont always be stable_. What this means is that your application can't make the assumption that every call will succeed every time. It also means that naively retrying when a request fails _may actually make the problem worse_!
+
+So how do you keep your application resilient in face of the upstream servers' unreliability?
+
+=== Limit Concurrent Requests
+
+First, you shouldn't make an unbounded number of simultaneous requests to a remote API. Just because your user requests 10K items at once doesn't mean you need to open 10K connections to the remote API, this is a great way to knock over servers. First, requests should be made from a virtual "pool" of connections. I say "virtual" since "pool" often indicates a set of _active_ handles to things, but in this case the pool acts more like a semaphore than a real pool of resources.
+
+
+=== Batching requests
+
+To make the most of your limited concurrency as a client, you can batch requests if supported by the upstream server. A batch requests queues up many requests and compiles them into a single request. For example, if the API supports this, you could request 15 user profiles using a single `GET` request as opposed to issuing 15 individual `GET` requests.
+
+Non batch request:
+
+--------------------------
+GET https://foobar.microservice.io/users/[uid]
+--------------------------
+
+Batched request
+
+--------------------------
+GET https://foobar.microservice.io/users
+
+{
+  "users" [uid1, uid2, uid3, uid4]
+}
+--------------------------
+
+Where the JSON object is the body of the request.
+
+=== Exponential Back-off w/ Jitter
+
+In addition to limiting concurrency, you also need to be respectful of the upstream service's recovery in the face of errors. Imagine a scenario where 10k users are all trying to access an upstream REST service, and the service buckles under the pressure. If all of the clients are programmed to retry immediately, they will all fail at roughly the same time and all retry at roughly the same time causing the server to buckle yet again.
+
+When retrying a request, you need to give the server time to recover. You should increase the amount of time you wait between requests with each consecutive failure. This is known as "back-off," and the most common function for determining the time to wait between requests is `f(x) = 2^x * time` where `x` is the current number of consecutive failures and `time` is a unit of time (i.e. `1000ms`). This formula is known as Exponential Back-Off.
+
+When using a back-off strategy, your client should also introduce jitter, or a random amount of time to shift the back-off period by. This protects against all of your clients failing and then simultaneously retrying at nearly the same exact time but with exponential back-off. By adding jitter to the back-off value, each client will connect randomly within a window of time, reducing the overall load of the server.
+
+
+== Handy dandy module
+
+If you are developing in Node.js (or developing a frontend app and can use Node.js modules), I've released a handy dandy module which wraps the {request}[request/request] module with connection pooling and exponential back-off, check it out {concurrent_request}[here]! This makes it incredibly easy to be both resilient and a good citizen! Happy coding!
