@@ -1,7 +1,7 @@
 Syntax Highlighting in Vim
 ==========================
 William Blankenship <william.jblankenship@gmail.com>
-v1.0, April 2017: documenting ftdetect
+v1.1, April 2017: pat -> pattern
 :autocmd: http://vimdoc.sourceforge.net/htmldoc/autocmd.html
 
 
@@ -19,15 +19,21 @@ that file.
 
 The logic for matching a file extension to a language is generally placed in
 the +./ftdetect+ folder of your vim plugin. Here we take advantage of the
-{autocmd}[autocmd] function which, as
-the name implies, automates the execution of a command.
+{autocmd}[autocmd] function which, as the name implies, automates the execution
+of a command.
 
 The command we are going to automate is +setfiletype+, if you already have a
 language file installed for your language under +./syntax+ as described above,
 you can test out this command using +:setf [LANGUAGE]+ from command mode
 (+setf+ is short for +setfiletype+).
 
-+autocmd+ works by defining a set of events to run a command in response to, and then narrowing the files that the command should be run against using a matching pattern. This looks like +autocmd {event} {pat} cmd+. We are interested in running our +setf+ command every time a file loads, which happens when we open a file or create a file: +BufRead,BufNewFile+. Lets say we are trying to match +asciidoc+ files, we would want to match all files with an extension of +.adoc+: +*.adoc+.
+The command +autocmd+ works by defining a set of events to run a command in
+response to, and then narrowing the files that the command should be run
+against using a matching pattern. This looks like +autocmd {event} {pattern}
+cmd+. We are interested in running our +setf+ command every time a file loads,
+which happens when we open a file or create a file: +BufRead,BufNewFile+. Lets
+say we are trying to match +asciidoc+ files, we would want to match all files
+with an extension of +.adoc+: +*.adoc+.
 
 Putting this all together, we get:
 
