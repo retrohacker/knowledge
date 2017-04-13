@@ -3,7 +3,7 @@ Implementing a REST Client
 William Blankenship <william.jblankenship@gmail.com>
 v1.0, April 2017: Initial brain dump
 :request: https://github.com/request/request
-:concurrent_request: https://github.com/retrohacker/concurrent_request
+:concurrent_request: https://github.com/retrohacker/concurrent-request
 
 
 == Error Handling
