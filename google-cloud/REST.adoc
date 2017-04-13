@@ -1,0 +1,107 @@
+Google Cloud REST API
+=====================
+William Blankenship <william.jblankenship@gmail.com>
+v1.0, April 2017: Initial Brain Dump
+:request: https://github.com/request/request
+:gtoken: https://github.com/ryanseys/node-gtoken
+:gcloud: https://cloud.google.com/sdk/gcloud
+:oauth: https://cloud.google.com/storage/docs/authentication
+:roles: https://cloud.google.com/iam/docs/understanding-roles
+:concurrent_request: https://github.com/retrohacker/concurrent-request
+
+== Authentication
+
+While the endpoints themselves are documented for the Google Rest API,
+authenticating against an endpoint is _not_. While I'm still not entire sure
+how to do this manually, I've been able to use the {request}[request/request]
+module to make authenticated requests against the Google Cloud REST API.
+
+The secret is using the {gtoken}[ryanseys/node-gtoken] library. This handles
+everything necessary for an {oauth}[OAuth service account] to get an
+authentication token for making future requests.
+
+To get started, you should use the {gcloud}[gcloud] cli tool to create your
+service account. After logging the `gcloud` tool into your account and
+selecting your project, run the following commands:
+
+-------------------------------------------------------------------------------
+$ gcloud iam service-accounts create [service_account_name]
+$ gcloud iam service-accounts list
+...
+$ # Take note of the full account name should be in the form:
+$ # [service_account_name]@[...]
+$ gcloud projects add-iam-policy-binding [project_id] \
+    --member serviceAccount:[full_account_name] \
+    --role roles/[role]
+$ gcloud iam service-accounts keys create creds.json \
+    --iam-account [full_account_name]
+-------------------------------------------------------------------------------
+
+For the roles you will need, take into consideration the actions you want your
+service account to be able to perform and then check {roles}[this list].
+
+After running the above commands, you should now have the file `creds.json`.
+Keep this secure, it gives full access to your Google Cloud account for the
+roles it was granted.
+
+In the same directory as `creds.json`, create the following node app:
+
+`index.js`
+
+-------------------------------------------------------------------------------
+var creds = require('./creds.json')
+var Gtoken = require('gtoken')
+var Pool = require('concurrent-request');
+// Provide request pooling with exponential back-off and retry jitter
+var request = new Pool({
+  interval: count => Math.pow(2, count) * 1000;
+  jitter: 1000, // 1s jitter
+  size: 5, // max of 5 concurrent requests
+  tries: 5, // max of 5 retries
+  handler: function handler (e, resp, body,cb) {
+    if (e) { return cb(e) }
+    if (resp.statusCode === 429) { return cb(new Error('Rate Limited')) }
+    return cb(null);
+  }
+})
+
+// Want to manipulate DNS
+scopes = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
+
+var gtoken = Gtoken(creds.client_email, creds.private_key, scopes)
+gtoken.getToken(function(e, token) {
+    if(e) { throw e }
+    // create a new managed zone
+    request({
+      uri: `${PROJECT_URI_GOES_HERE}/managedZones,
+      method: 'POST',
+      json: true,
+      auth: {
+        bearer: token, // <- BOOM!
+      },
+      body: {
+        kind: 'dns#managedZone',
+        name: 'uuid',
+        dnsName: 'foobar.example.com.', // Notice the FQDN
+        description: 'Created with Request!'
+      }
+    }, console.log);
+});
+-------------------------------------------------------------------------------
+
+`package.json`
+
+-------------------------------------------------------------------------------
+{
+  "dependencies": {
+    "concurrent-request": "^1.0.2",
+    "gtoken": "^1.2.2"
+  }
+}
+-------------------------------------------------------------------------------
+
+Now run this example and you will get a new managed zone!
+
+== Rate Limiting
+
+Google's APIs have some pretty aggressive rate limiting policies (20 req/s max). You should strive to stay within these, but being rate limited is pretty much inevitable. To help with this, I created {concurrent_request}[retrohacker/concurrent-request] which handles connection pooling and retry logic for you, while exposing the {request}[request/request] API you know and love.
