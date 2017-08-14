@@ -21,8 +21,8 @@ init(59735)───node(59775)─┬─{V8 WorkerThread}(59781)
 ### Install custom built linux-tools
 
 ```
-wget [url].deb
-dpkg -i [file].deb
-apt install -f
-apt install linux-tools-4.4.0-91-generic binutils libaudit1 libc6 libdw1 libelf1 liblzma5 libpci3 libslang2 libudev1 libunwind8 zlib1g
+$ wget [url].deb
+$ dpkg -i [file].deb
+$ apt install -f
+$ apt install linux-tools-4.4.0-91-generic binutils libaudit1 libc6 libdw1 libelf1 liblzma5 libpci3 libslang2 libudev1 libunwind8 zlib1g
 ```
