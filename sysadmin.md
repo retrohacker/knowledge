@@ -66,4 +66,10 @@ $ ssh [user]@100.100.100.100
 -> docker ps --filter name=foobar
 CONTAINER ID        IMAGE          COMMAND             CREATED             STATUS              PORTS
 7da5c0015966        foobar         ./foobar            1 day ago           up 1 day
-````
+```
+
+### Find package that provides a binary
+
+```shell
+$ pkg -S $(which [command])
+```
