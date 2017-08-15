@@ -48,4 +48,11 @@ $ git clone --depth 1 http://github.com/brendangregg/FlameGraph
 $ cd FlameGraph
 $ ./stackcollapse-perf.pl < ../nodestacks | ./flamegraph.pl --colors js > ./node-flamegraph.svg
 ```
+
+### Download a file from the server
+
+```shell
+$ python3 -m http.server 8080
 ```
+
+Now simply use wget to pull down your file :-)
