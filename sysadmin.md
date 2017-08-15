@@ -26,3 +26,24 @@ $ dpkg -i [file].deb
 $ apt install -f
 $ apt install linux-tools-4.4.0-91-generic binutils libaudit1 libc6 libdw1 libelf1 liblzma5 libpci3 libslang2 libudev1 libunwind8 zlib1g
 ```
+### Capture flamegraph of a containerized Node.js app from the host
+
+Make sure Node.js was started with the `--perf-basic-prof` flag.
+
+```shell
+$ docker inspect --format '{{.State.Pid}}' [container id]
+59735
+$ pstree -p 59735
+... (see above)
+$ perf record -F 99 -p 59735 -g -- sleep 30
+$ docker exec -it [container id] pgrep -n 'node'
+312
+$ # Map the JIT map for the PID inside the container to the host's PID so perf can find it
+$ docker exec -it [container id] cat /tmp/perf-312.map > /tmp/perf-59735.map
+$ perf script > nodestacks
+$ sed -i '/\[unknown\]/d' nodestacks
+$ git clone --depth 1 http://github.com/brendangregg/FlameGraph
+$ cd FlameGraph
+$ ./stackcollapse-perf.pl < ../nodestacks | ./flamegraph.pl --colors js > ./node-flamegraph.svg
+```
+```
