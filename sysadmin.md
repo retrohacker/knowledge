@@ -71,5 +71,5 @@ CONTAINER ID        IMAGE          COMMAND             CREATED             STATU
 ### Find package that provides a binary
 
 ```shell
-$ pkg -S $(which [command])
+$ dpkg -S $(which [command])
 ```
