@@ -56,3 +56,14 @@ $ python3 -m http.server 8080
 ```
 
 Now simply use wget to pull down your file :-)
+
+### Find a container on a host
+
+Let's say you know the name of a container is `foobar` and you know its host is `100.100.100.100`
+
+```shell
+$ ssh [user]@100.100.100.100
+-> docker ps --filter name=foobar
+CONTAINER ID        IMAGE          COMMAND             CREATED             STATUS              PORTS
+7da5c0015966        foobar         ./foobar            1 day ago           up 1 day
+````
