@@ -36,6 +36,8 @@ $ docker inspect --format '{{.State.Pid}}' [container id]
 $ pstree -p 59735
 ... (see above - take note of Node's PID)
 $ perf record -F 99 -p 59735 -g -- sleep 30
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.314 MB perf.data (567 samples) ]
 $ docker exec -it [container id] pgrep -n 'node'
 312
 $ # Map the JIT map for the PID inside the container to the host's PID so perf can find it
