@@ -34,12 +34,12 @@ Make sure Node.js was started with the `--perf-basic-prof` flag.
 $ docker inspect --format '{{.State.Pid}}' [container id]
 59735
 $ pstree -p 59735
-... (see above)
+... (see above - take note of Node's PID)
 $ perf record -F 99 -p 59735 -g -- sleep 30
 $ docker exec -it [container id] pgrep -n 'node'
 312
 $ # Map the JIT map for the PID inside the container to the host's PID so perf can find it
-$ docker exec -it [container id] cat /tmp/perf-312.map > /tmp/perf-59735.map
+$ docker exec -it [container id] cat /tmp/perf-312.map > /tmp/perf-[node pid].map
 $ perf script > nodestacks
 $ sed -i '/\[unknown\]/d' nodestacks
 $ git clone --depth 1 http://github.com/brendangregg/FlameGraph
