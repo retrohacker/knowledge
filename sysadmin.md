@@ -73,3 +73,11 @@ CONTAINER ID        IMAGE          COMMAND             CREATED             STATU
 ```shell
 $ dpkg -S $(which [command])
 ```
+
+### Get all errors from restify server
+
+For a server using restify and bunyan and logging to disk
+
+```shell
+cat /path/to/logfile.log | bunyan -c 'this.res && this.res.statusCode !== 200' | grep -o '    .*Error:' | sort | uniq -c | sort -n
+```
