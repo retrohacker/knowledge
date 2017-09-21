@@ -79,5 +79,5 @@ $ dpkg -S $(which [command])
 For a server using restify and bunyan and logging to disk
 
 ```shell
-cat /path/to/logfile.log | bunyan -c 'this.res && this.res.statusCode !== 200' | grep -o '    .*Error:' | sort | uniq -c | sort -n
+cat *.log | bunyan -c 'this.err && this.err.name && this.res && this.res.statusCode' -o json | jq -cM '{ err: .err.name, res: .res.statusCode }' | sort | uniq -c | sort -n
 ```
