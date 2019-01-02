@@ -91,6 +91,12 @@ https://github.com/pi-hole/pi-hole/#one-step-automated-install
 
 https://docs.pi-hole.net/guides/dns-over-https/
 
+## Add additional block lists
+
+There is a great compilation of blocklists here: https://firebog.net/
+
+Be sure to read what the checkmarks and arrows mean. There is also a list of commonly used services that you may want to white list at the bottom of the page. There are some domains which are blocked (for good reason) in some of these lists that provide services that are relatively common for people to use (Google, bit.ly link shortners, etc.), you will probably be sad if you don't white-list these.
+
 ## Configure Router
 
 At this point, you need to hop on your router and setup your raspberry pi as your *exclusive* upstream DNS server.
