@@ -9,7 +9,11 @@ By upgrading, you get what is known as a "catch all" email address. This allows 
 * target@blankenship.io
 * bestbuy@blankenship.io
 
-While all of these emails are distinct, they will all go into the same inbox. This allows you to track how folks are using (and sharing!) my email address. On top of that, You can use these for filters, so if someone shares my email address with a bunch of advertisers you can condemn that address to go straight to the trash for the rest of forever! This returns control of my email back to you, no longer do you have to "unsubscribe" or work with complicated filters when your email address gets shared with advertisers, you can just send your spam straight to the trash!
+While all of these emails are distinct, they will all go into the same inbox.
+
+By giving a unique email address to everyone you interact with, you can track how folks are using (and sharing!) you're email address. On top of that, you can use these for filters, so if someone shares your email address with a bunch of advertisers you can condemn that address to go straight to the trash for the rest of forever!
+
+This returns control of your email back to you, no longer do you have to "unsubscribe" or work with complicated filters when your email address gets shared with advertisers, you can just send your spam straight to the trash! It also let's you know who shared your personal information, since their name is now on the 3rd party spam!
 
 # Setting up a Custom Domain
 
