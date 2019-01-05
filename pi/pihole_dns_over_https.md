@@ -89,7 +89,12 @@ https://github.com/pi-hole/pi-hole/#one-step-automated-install
 
 ## Setup DNS over HTTPS
 
-https://docs.pi-hole.net/guides/dns-over-https/
+I originally had just used cloudflared, but have since switched to DNSCrypt. DNSCrypt has a large pool up no-log DNS providers that it can rotate through, meaning there is no single point of failure for your upstream DNS, whereas I had seen issues with cloudflared resolving https://1.1.1.1.
+
+First setup DNSCrypt for your Pi-Hole here:
+https://github.com/jedisct1/dnscrypt-proxy/wiki/installation
+
+If you want to use DNSSec (I tried, but saw huge latencies) there is a checkbox at the bottom of the Pi-Hole DNS configuration page in the web-admin panel. Be sure to set `require_dnsec = true` in your dnscryhpt-proxy file if you check that box! Once enabled, you can verify it is working by going here: http://dnssec.vs.uni-due.de/
 
 ## Add additional block lists
 
