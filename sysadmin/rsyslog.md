@@ -69,3 +69,21 @@ $template Myprog,"%msg%\n"
 $template LogRotate,"/logs/myprog/myprog-%$year%%$month%%$day%-%$hour%0000.log"
 :programname, isequal, "myprog" ?LogRotate;Myprog
 ```
+
+# Testing configuration
+
+If you want to test a configuration file with rsyslog, create a Dockerfile like so:
+
+```
+FROM debian:buster
+RUN apt-get update && apt-get install -y rsyslog
+WORKDIR /app
+ENTRYPOINT ["rsyslogd", "-N", "1", "-f"]
+
+```
+
+Then run
+
+```
+docker build -t rsyslog . && docker run -it -v "$PWD:/app" rsyslog ./rsyslog.conf
+```
